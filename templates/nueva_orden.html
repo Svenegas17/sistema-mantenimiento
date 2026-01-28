@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Nueva orden</h3>
+
+<form method="post" class="card p-3 shadow">
+
+<input class="form-control mb-2" name="fecha" placeholder="Fecha" required>
+<input class="form-control mb-2" name="cliente" placeholder="Cliente" required>
+<input class="form-control mb-2" name="contacto" placeholder="Contacto">
+<input class="form-control mb-2" name="equipo" placeholder="Equipo">
+<input class="form-control mb-2" name="marca" placeholder="Marca">
+<input class="form-control mb-2" name="modelo" placeholder="Modelo">
+
+<textarea class="form-control mb-2" name="falla" placeholder="Falla"></textarea>
+<textarea class="form-control mb-2" name="diagnostico" placeholder="Diagnóstico"></textarea>
+<textarea class="form-control mb-2" name="trabajo" placeholder="Trabajo realizado"></textarea>
+
+<select class="form-control mb-3" name="estado">
+    <option>Pendiente</option>
+    <option>En reparación</option>
+    <option>Listo</option>
+    <option>Entregado</option>
+</select>
+
+<button class="btn btn-success">Guardar</button>
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancelar</a>
+
+</form>
+{% endblock %}

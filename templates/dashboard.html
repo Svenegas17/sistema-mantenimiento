@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Equipos en mantenimiento</h3>
+
+<a href="{{ url_for('nueva_orden') }}" class="btn btn-primary mb-3">+ Nueva orden</a>
+
+<form method="get" class="row mb-3">
+  <div class="col-md-4">
+    <input class="form-control" name="q" placeholder="Buscar cliente, equipo o estado" value="{{ q }}">
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-secondary">Buscar</button>
+  </div>
+</form>
+
+<table class="table table-bordered table-hover shadow-sm">
+<thead class="table-dark">
+<tr>
+    <th>ID</th>
+    <th>Cliente</th>
+    <th>Equipo</th>
+    <th>Estado</th>
+    <th>Acciones</th>
+</tr>
+</thead>
+
+<tbody>
+{% for orden in ordenes %}
+<tr>
+    <td>{{ orden.id }}</td>
+    <td>{{ orden.cliente }}</td>
+    <td>{{ orden.equipo }}</td>
+
+    <td>
+        {% if orden.estado == 'Pendiente' %}
+            <span class="badge bg-danger">Pendiente</span>
+        {% elif orden.estado == 'En reparación' %}
+            <span class="badge bg-warning text-dark">En reparación</span>
+        {% elif orden.estado == 'Listo' %}
+            <span class="badge bg-success">Listo</span>
+        {% else %}
+            <span class="badge bg-secondary">{{ orden.estado }}</span>
+        {% endif %}
+    </td>
+
+    <td>
+        <a href="{{ url_for('editar_orden', orden_id=orden.id) }}" class="btn btn-sm btn-warning">Editar</a>
+
+        <form method="post" action="{{ url_for('eliminar_orden', orden_id=orden.id) }}" style="display:inline">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta orden?')">Eliminar</button>
+        </form>
+
+        <div class="mt-1">
+            <a href="{{ url_for('cambiar_estado', orden_id=orden.id, nuevo_estado='Listo') }}" class="btn btn-sm btn-success">Listo</a>
+            <a href="{{ url_for('cambiar_estado', orden_id=orden.id, nuevo_estado='Entregado') }}" class="btn btn-sm btn-secondary">Entregado</a>
+        </div>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

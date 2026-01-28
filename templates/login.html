@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-4">
+
+<div class="card shadow">
+<div class="card-body">
+
+<h4 class="text-center mb-3">Ingreso al sistema</h4>
+
+<form method="post">
+    <div class="mb-3">
+        <input class="form-control" name="username" placeholder="Usuario" required>
+    </div>
+
+    <div class="mb-3">
+        <input type="password" class="form-control" name="password" placeholder="Contraseña" required>
+    </div>
+
+    <button class="btn btn-primary w-100">Entrar</button>
+</form>
+
+<div class="text-center mt-3">
+    <a href="{{ url_for('register') }}">Crear cuenta</a>
+</div>
+
+{% if error %}
+<div class="alert alert-danger mt-3">{{ error }}</div>
+{% endif %}
+
+</div>
+</div>
+
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Editar orden #{{ orden.id }}</h3>
+
+<form method="post" class="card p-3 shadow">
+
+<input class="form-control mb-2" name="fecha" value="{{ orden.fecha }}" required>
+<input class="form-control mb-2" name="cliente" value="{{ orden.cliente }}" required>
+<input class="form-control mb-2" name="contacto" value="{{ orden.contacto }}">
+<input class="form-control mb-2" name="equipo" value="{{ orden.equipo }}">
+<input class="form-control mb-2" name="marca" value="{{ orden.marca }}">
+<input class="form-control mb-2" name="modelo" value="{{ orden.modelo }}">
+
+<textarea class="form-control mb-2" name="falla">{{ orden.falla }}</textarea>
+<textarea class="form-control mb-2" name="diagnostico">{{ orden.diagnostico }}</textarea>
+<textarea class="form-control mb-2" name="trabajo">{{ orden.trabajo }}</textarea>
+
+<select class="form-control mb-3" name="estado">
+    <option {{ 'selected' if orden.estado=='Pendiente' }}>Pendiente</option>
+    <option {{ 'selected' if orden.estado=='En reparación' }}>En reparación</option>
+    <option {{ 'selected' if orden.estado=='Listo' }}>Listo</option>
+    <option {{ 'selected' if orden.estado=='Entregado' }}>Entregado</option>
+</select>
+
+<button class="btn btn-success">Guardar cambios</button>
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancelar</a>
+
+</form>
+{% endblock %}
