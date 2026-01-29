@@ -4,6 +4,22 @@ from flask_login import UserMixin
 db = SQLAlchemy()
 
 
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+
+db = SQLAlchemy()
+
+class Usuario(db.Model, UserMixin):
+    __tablename__ = 'usuarios'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    rol = db.Column(db.String(20), default='tecnico')  # admin / tecnico
+
+    ordenes = db.relationship('Orden', backref='tecnico', lazy=True)
+
+
 class Orden(db.Model):
     __tablename__ = 'ordenes'
 
@@ -19,10 +35,4 @@ class Orden(db.Model):
     trabajo = db.Column(db.Text)
     estado = db.Column(db.String(30))
 
-
-class Usuario(db.Model, UserMixin):
-    __tablename__ = 'usuarios'
-
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    tecnico_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'))

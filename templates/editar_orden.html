@@ -24,7 +24,11 @@
 </select>
 
 <button class="btn btn-success">Guardar cambios</button>
-<a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancelar</a>
+
+<a href="{% if current_user.rol == 'admin' %}{{ url_for('admin_dashboard') }}{% else %}{{ url_for('tecnico_dashboard') }}{% endif %}" 
+   class="btn btn-secondary">
+   Cancelar
+</a>
 
 </form>
 {% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Mis órdenes asignadas</h3>
+
+<a href="{{ url_for('nueva_orden') }}" class="btn btn-primary mb-3">+ Nueva orden</a>
+
+<form method="get" class="row mb-3">
+  <div class="col-md-4">
+    <input class="form-control" name="q" placeholder="Buscar cliente, equipo o estado" value="{{ q }}">
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-secondary">Buscar</button>
+  </div>
+</form>
+
+<table class="table table-bordered table-hover shadow-sm">
+<thead class="table-dark">
+<tr>
+    <th>ID</th>
+    <th>Cliente</th>
+    <th>Equipo</th>
+    <th>Estado</th>
+    <th>Acciones</th>
+</tr>
+</thead>
+
+<tbody>
+{% for orden in ordenes %}
+<tr>
+    <td>{{ orden.id }}</td>
+    <td>{{ orden.cliente }}</td>
+    <td>{{ orden.equipo }}</td>
+    <td>{{ orden.estado }}</td>
+
+    <td>
+        <a href="{{ url_for('editar_orden', orden_id=orden.id) }}" class="btn btn-sm btn-warning">Editar</a>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

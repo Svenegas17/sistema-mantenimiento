@@ -1,11 +1,10 @@
-<p>ROL ACTUAL: {{ current_user.rol }}</p>
-
 {% extends "base.html" %}
 
 {% block content %}
-<h3>Equipos en mantenimiento</h3>
+<h3>Panel de Administrador – Órdenes</h3>
 
 <a href="{{ url_for('nueva_orden') }}" class="btn btn-primary mb-3">+ Nueva orden</a>
+<a href="{{ url_for('crear_tecnico') }}" class="btn btn-success mb-3">+ Crear técnico</a>
 
 <form method="get" class="row mb-3">
   <div class="col-md-4">
@@ -22,11 +21,7 @@
     <th>ID</th>
     <th>Cliente</th>
     <th>Equipo</th>
-
-    {% if current_user.rol == 'admin' %}
     <th>Técnico</th>
-    {% endif %}
-
     <th>Estado</th>
     <th>Acciones</th>
 </tr>
@@ -38,12 +33,13 @@
     <td>{{ orden.id }}</td>
     <td>{{ orden.cliente }}</td>
     <td>{{ orden.equipo }}</td>
-
-    {% if current_user.rol == 'admin' %}
     <td>
-        {{ orden.tecnico.username if orden.tecnico else '—' }}
+        {% if orden.tecnico %}
+            {{ orden.tecnico.username }}
+        {% else %}
+            ---
+        {% endif %}
     </td>
-    {% endif %}
 
     <td>
         {% if orden.estado == 'Pendiente' %}
@@ -60,11 +56,9 @@
     <td>
         <a href="{{ url_for('editar_orden', orden_id=orden.id) }}" class="btn btn-sm btn-warning">Editar</a>
 
-        {% if current_user.rol == 'admin' %}
         <form method="post" action="{{ url_for('eliminar_orden', orden_id=orden.id) }}" style="display:inline">
             <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta orden?')">Eliminar</button>
         </form>
-        {% endif %}
 
         <div class="mt-1">
             <a href="{{ url_for('cambiar_estado', orden_id=orden.id, nuevo_estado='Listo') }}" class="btn btn-sm btn-success">Listo</a>

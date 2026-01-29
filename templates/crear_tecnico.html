@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Crear nuevo técnico</h3>
+
+<form method="post" class="card p-4 shadow" style="max-width: 400px">
+
+    <div class="mb-3">
+        <label>Usuario</label>
+        <input name="username" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Contraseña</label>
+        <input name="password" type="password" class="form-control" required>
+    </div>
+
+    <button class="btn btn-success">Crear técnico</button>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Cancelar</a>
+
+</form>
+{% endblock %}
