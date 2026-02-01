@@ -65,6 +65,40 @@ def login():
 
     return render_template('login.html', error=error)
 
+# ---------------- Registro-------
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    error = None
+
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+
+        if not username or not password:
+            error = "Todos los campos son obligatorios"
+            return render_template('register.html', error=error)
+
+        if Usuario.query.filter_by(username=username).first():
+            error = "El usuario ya existe"
+            return render_template('register.html', error=error)
+
+        nuevo_usuario = Usuario(
+            username=username,
+            password=generate_password_hash(password),
+            rol='tecnico'   #  por seguridad todos se registran como técnico
+        )
+
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+
+        flash("Cuenta creada correctamente, ahora puedes iniciar sesión")
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+
+
 # ============================
 #        DASHBOARDS
 # ============================
