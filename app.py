@@ -19,11 +19,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-# -------- CREAR BD Y ADMIN --------
+# -------- CREAR BD Y ADMIN (SEGURO) --------
 with app.app_context():
     db.create_all()
 
-    if not Usuario.query.filter_by(rol='admin').first():
+    admin = Usuario.query.filter_by(username='admin').first()
+    if not admin:
         admin = Usuario(
             username='admin',
             password=generate_password_hash('admin123'),
@@ -32,16 +33,15 @@ with app.app_context():
         db.session.add(admin)
         db.session.commit()
 
+
 # -------- LOGIN MANAGER --------
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
-
 
 # -------- LOGIN --------
 @app.route('/', methods=['GET', 'POST'])
@@ -64,34 +64,6 @@ def login():
             error = "Usuario o contraseña incorrectos"
 
     return render_template('login.html', error=error)
-
-
-# -------- REGISTRO --------
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form.get('username', '').strip()
-        password = request.form.get('password', '').strip()
-
-        if not username or not password:
-            flash("Debe completar todos los campos")
-            return redirect(url_for('register'))
-
-        if Usuario.query.filter_by(username=username).first():
-            flash("El usuario ya existe")
-            return redirect(url_for('register'))
-
-        hashed = generate_password_hash(password)
-        user = Usuario(username=username, password=hashed, rol='tecnico')
-
-        db.session.add(user)
-        db.session.commit()
-
-        flash("Usuario registrado con éxito")
-        return redirect(url_for('login'))
-
-    return render_template('register.html')
-
 
 # ============================
 #        DASHBOARDS
@@ -117,7 +89,6 @@ def admin_dashboard():
     ordenes = query.order_by(Orden.id.desc()).all()
     return render_template('dashboard_admin.html', ordenes=ordenes, q=q)
 
-
 @app.route('/tecnico/dashboard')
 @login_required
 def tecnico_dashboard():
@@ -137,7 +108,6 @@ def tecnico_dashboard():
 
     ordenes = query.order_by(Orden.id.desc()).all()
     return render_template('dashboard_tecnico.html', ordenes=ordenes, q=q)
-
 
 # -------- NUEVA ORDEN --------
 @app.route('/nueva', methods=['GET', 'POST'])
@@ -165,12 +135,8 @@ def nueva_orden():
             flash("Por favor completa todos los campos obligatorios")
             return redirect(url_for('nueva_orden'))
 
-        # Asignación de técnico
         if current_user.rol == 'admin':
             tecnico_id = request.form.get('tecnico_id')
-            if not tecnico_id:
-                flash("Debe asignar un técnico")
-                return redirect(url_for('nueva_orden'))
         else:
             tecnico_id = current_user.id
 
@@ -237,7 +203,6 @@ def editar_orden(orden_id):
 
     return render_template('editar_orden.html', orden=orden)
 
-
 # -------- ELIMINAR ORDEN --------
 @app.route('/eliminar/<int:orden_id>', methods=['POST'])
 @login_required
@@ -252,7 +217,6 @@ def eliminar_orden(orden_id):
 
     flash("Orden eliminada correctamente")
     return redirect(url_for('admin_dashboard'))
-
 
 # -------- CAMBIAR ESTADO --------
 @app.route('/estado/<int:orden_id>/<nuevo_estado>')
@@ -273,8 +237,7 @@ def cambiar_estado(orden_id, nuevo_estado):
     else:
         return redirect(url_for('tecnico_dashboard'))
 
-
-# -------- CREAR TÉCNICO (ADMIN) --------
+# -------- CREAR TÉCNICO --------
 @app.route('/admin/crear_tecnico', methods=['GET', 'POST'])
 @login_required
 def crear_tecnico():
@@ -305,14 +268,12 @@ def crear_tecnico():
 
     return render_template('crear_tecnico.html')
 
-
 # -------- LOGOUT --------
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
